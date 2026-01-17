@@ -12,6 +12,9 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser())
+
+const createAdmin = require('./createMasterAdmin');
+createAdmin();
  
 app.get('/', (req, res) => {
     res.json("Message from server API: MongoDB Connected Successfully");

@@ -8,7 +8,10 @@ exports.registerUser = async (req,res) => {
         const {email, password} = req.body;
         bcrypt.hash(password, 10)
         .then(hash => {
-            User.create({email, password: hash})
+            User.create({
+                email,
+                password: hash,
+            })
             .then(user => res.json(user))
             .catch(err => res.json(err.message))
             // res.status(200).json(user)
@@ -31,7 +34,7 @@ exports.loginUser = async (req, res) => {
             if(user){
                 bcrypt.compare(password, user.password, (err, response) => {
                     if(response){
-                        const token = jwt.sign({email: user.email}, process.env.JWT_KEY, {expiresIn: "1d"})
+                        const token = jwt.sign({email: user.email, role: user.role}, process.env.JWT_KEY, {expiresIn: "1d"})
                         res.cookie("token", token);
                         res.json("Success")
                     }
