@@ -42,9 +42,19 @@ app.get("/user", verifyUser, verifyRole("user"), (req, res) => {
   res.json("Welcome user");
 });
 
-app.get('/admin/addBook', (req,res) => {
-    res.send("Add Book");
-})
+const bookRoutes = require('./routes/bookRoutes')
+app.use('/admin', bookRoutes)
+
+
+
+
+
+
+
+
+
+
+
 
 app.get('/admin/updateBook', (req,res) => {
     res.send("Update Book");
