@@ -4,6 +4,9 @@ const app = express();
 require("./db");
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
+
+const {verifyUser} = require('./middleware/authMiddleware')
+const {verifyRole} = require('./middleware/roleMiddleware')
  
 app.use(cors({
     origin: ["http://localhost:5173"],
@@ -23,10 +26,21 @@ app.get('/', (req, res) => {
 const userRoutes = require('./routes/userRoutes')
 app.use('/', userRoutes)
 
-const {verifyUser} = require('./middleware/authMiddleware')
-app.get('/home',verifyUser, (req,res) => {
-    return res.json("Success")
-})
+const authRoutes = require('./routes/auth')
+app.use("/auth", authRoutes)
+
+
+// app.get('/home',verifyUser, (req,res) => {
+//     return res.json("Success")
+// })
+
+app.get("/admin", verifyUser, verifyRole("admin"), (req, res) => {
+  res.json("Welcome admin");
+});
+
+app.get("/user", verifyUser, verifyRole("user"), (req, res) => {
+  res.json("Welcome user");
+});
 
 app.get('/admin/addBook', (req,res) => {
     res.send("Add Book");

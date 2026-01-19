@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react'
 import axios from 'axios';
+import ButtonField from './ButtonField';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const navigate = useNavigate();
+
   axios.defaults.withCredentials = true;
   useEffect(() => {
     axios.get('http://localhost:5000/home')
@@ -13,7 +17,15 @@ export default function Home() {
         })
         .catch(err => console.log(err))
   }, [])
+
+  function handleLogout(){
+    cookieStore.delete("token");
+    navigate('/login')
+  }
   return (
+    <>
     <div>Home</div>
+    <ButtonField id="logout" onClick={handleLogout} data="Logout" />
+    </>
   )
 }

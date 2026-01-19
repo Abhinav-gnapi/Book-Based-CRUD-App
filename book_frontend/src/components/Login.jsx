@@ -3,21 +3,26 @@ import InputField from './InputField'
 import ButtonField from './ButtonField'
 import './Registrationform.css'
 import { useState } from 'react'
-import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom'
+import api from '../api/axios'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const navigate = useNavigate()
 
-  axios.defaults.withCredentials = true;
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:5000/login', {email,password})
+    await api.post('http://localhost:5000/login', {email,password})
     .then(res => {
-      if(res.data === "Success"){
-        navigate('/home')
+      console.log(res.data)
+      if(res.data.user.success === true){
+        if(res.data.user.role === "admin"){
+          navigate("/adminHome")
+        } else {
+          navigate("/userHome")
+        }
       } else {
         console.log("Wrong password!")
       }

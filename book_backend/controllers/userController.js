@@ -6,6 +6,10 @@ require("dotenv").config();
 exports.registerUser = async (req,res) => {
     try {
         const {email, password} = req.body;
+        const existUser = await User.findOne({email})
+        if(existUser){
+            res.json("User already exists..please login!")
+        }
         bcrypt.hash(password, 10)
         .then(hash => {
             User.create({
@@ -35,15 +39,19 @@ exports.loginUser = async (req, res) => {
                 bcrypt.compare(password, user.password, (err, response) => {
                     if(response){
                         const token = jwt.sign({email: user.email, role: user.role}, process.env.JWT_KEY, {expiresIn: "1d"})
-                        res.cookie("token", token);
-                        res.json("Success")
+                        res.cookie("token", token, {httpOnly: true});
+                        res.json({user: {
+                            success: true,
+                            email: user.email,
+                            role: user.role
+                        }})
                     }
                     else{
                        res.json("Password is incorrect!");
                     }
                 })
             } else {
-                res.json("Entry is not exists! please register..")
+                res.json("User not exists! please register..")
             }
         })
         .catch(err => res.json(err))
@@ -56,6 +64,24 @@ exports.loginUser = async (req, res) => {
     }
     }catch (error) {
         res.status(400).json({
+        statusCode: res.statusCode,
+        errorMsg: error.message
+        });
+    }
+}
+
+exports.logoutUser = async (req, res) => {
+    try {
+        // res.clearCookie('token');
+        // res.status(200).json({message:"Logout Successfully!"})
+        res.cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0)
+        });
+
+    res.json({ success: true, message:"Logout Successfully!"});
+    } catch (error) {
+        res.status(500).json({
         statusCode: res.statusCode,
         errorMsg: error.message
         });

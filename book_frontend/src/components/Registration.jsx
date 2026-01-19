@@ -39,7 +39,7 @@ export default function Registration() {
         <InputField type="email" id="email" placeholder="Enter email" autocomplete="off" onChange={(e)=> setEmail(e.target.value)}/>
         <InputField type="password" id="password" placeholder="Enter password" autocomplete="off" onChange={(e)=> setPassword(e.target.value)}/>
         <InputField type="password" id="confirm-password" placeholder="Enter confirm password" autoComplete="off" onChange={(e)=> setConfirmPassword(e.target.value)}/>
-        <ButtonField id="submit" for="Register" onClick={validate}/>
+        <ButtonField id="submit" data="Register" onClick={validate}/>
     </form>
     <p>Already have Account</p>
     <Link to='/login'>Login</Link>
