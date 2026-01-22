@@ -1,13 +1,3 @@
-// exports.verifyRole = (...roles) => {
-//   return (req, res, next) => {
-//     if (!roles.includes(req.user.role)) {
-//       return res.status(403).json("Access denied");
-//     }
-//     next();
-//   };
-// };
-
-
 import { Response, NextFunction } from "express";
 import { JwtPayload } from "jsonwebtoken";
 import { Request } from "express";

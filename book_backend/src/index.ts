@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv"
 
 import "./db";
 
@@ -18,6 +19,7 @@ import reviewRoutes from "./routes/reviewRoutes"
 import wishlistRoutes from "./routes/wishlistRoutes"
 
 const app = express();
+dotenv.config();
 
 app.use(
   cors({
@@ -52,6 +54,6 @@ app.use("/user",verifyUser,verifyRole("user"), userBookRoutes)
 app.use("/user",verifyUser,verifyRole("user"), reviewRoutes)
 app.use("/user", verifyUser, verifyRole("user"), wishlistRoutes)
 
-const PORT = 5000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,10 +1,5 @@
 import "express";
-
-interface JwtUser {
-  id: string;
-  email: string;
-  role: string;
-}
+import JwtUser from "../interfaces/userJWT.interface";
 
 declare module "express" {
   interface Request {

@@ -1,14 +1,6 @@
 import mongoose, {Document, model, Schema, Types} from "mongoose";
 import Book from "./bookModel";
-
-export interface ReviewI {
-    book: Types.ObjectId;
-    user: Types.ObjectId;
-    rating:number;
-    comment:string;
-    createdAt: Date;
-    updateAt:Date;
-}
+import ReviewI from "../interfaces/review.interface";
 
 const reviewSchema = new Schema<ReviewI>({
     book:{

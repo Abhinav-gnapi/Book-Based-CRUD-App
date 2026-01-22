@@ -1,11 +1,5 @@
 import mongoose, {Document, Schema} from 'mongoose'
-
-export interface BookI extends Document {
-    title: string;
-    author: string;
-    price: number;
-    reviewCount: number;
-}
+import BookI from '../interfaces/book.interface';
 
 const BookSchema : Schema<BookI> = new Schema({
     title:{

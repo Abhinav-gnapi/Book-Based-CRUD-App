@@ -1,10 +1,5 @@
-import {Schema, model, Types} from "mongoose"
-
-export interface WishlistI {
-    user: Types.ObjectId;
-    book: Types.ObjectId;
-    createdAt: Date;
-}
+import {Schema, model} from "mongoose"
+import WishlistI from "../interfaces/wishlist.interface"
 
 const WishlistSchema = new Schema<WishlistI>({
     user: {
