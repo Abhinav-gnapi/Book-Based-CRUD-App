@@ -16,6 +16,10 @@ const userSchema = new Schema<UserI>({
     required: [true, "Please enter password!"],
     minLength: 6,
   },
+  username: {
+    type: String,
+    required: [true, "Please enter username!"]
+  },
   role: {
     type: String,
     enum: ["admin", "user"],

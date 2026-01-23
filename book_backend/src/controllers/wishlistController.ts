@@ -8,6 +8,9 @@ export const addWishlist = async (req: Request, res: Response) => {
         }
         const userId = req.user.id;
         const bookId = req.params.id;
+        if (!bookId) {
+            return res.status(400).json({ message: "Book ID required" });
+        }
         const existItem = await Wishlist.findOne({
             user: userId,
             book: bookId

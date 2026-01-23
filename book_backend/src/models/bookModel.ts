@@ -10,6 +10,15 @@ const BookSchema : Schema<BookI> = new Schema({
         type: String,
         required: [true, "Please enter author!"]
     },
+    publicationYear: {
+        type: Number,
+        required: [true, "Please enter publication year!"]
+    },
+    genre: {
+        type: [String],
+        enum: ["Fantasy", "Sci-Fi", "Romance", "Horror", "Biography", "History", "Drama", "Educational"],
+        required: [true, "Please enter the genres"]
+    },
     price:{
         type: Number,
         min: 0,

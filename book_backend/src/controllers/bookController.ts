@@ -1,16 +1,12 @@
 import { Request, Response } from "express";
 import Book from "../models/bookModel";
-
-interface BookIBody {
-    title: string;
-    author: string;
-    price: number;
-}
+import BookI from "../interfaces/book.interface";
 
 export const addBooks = async (req: Request, res: Response) => {
-    const {title, author, price} = req.body as BookIBody;
+    const {title, author,publicationYear, genre, price} = req.body as BookI;
     try {
-        Book.create({title, author, price})
+        if (!title || !author || !publicationYear || !Array.isArray(genre) || genre.length === 0|| !price) return res.status(400).json("Enter Title, Author, Publication year, Genre and price!");
+        await Book.create({title, author,publicationYear,genre, price})
         .then(book => res.send(book))
         .catch(error => res.json(error.message))
     } catch (error:any) {
@@ -36,6 +32,9 @@ export const viewAllBooks = async (req: Request, res: Response) => {
 export const viewSingleBook = async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
+        if (!id) {
+            return res.status(400).json({ message: "Book ID required" });
+        }
         const book = await Book.findOne({_id: id});
         if(!book){
             return res.status(404).json("Book is not available!")
@@ -47,9 +46,12 @@ export const viewSingleBook = async (req: Request, res: Response) => {
 }
 
 export const updateBook = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const bookId = req.params.id;
     try {
-        const existBook = await Book.findOne({_id:id});
+        if (!bookId) {
+            return res.status(400).json({ message: "Book ID required" });
+        }
+        const existBook = await Book.findOne({_id:bookId});
         if(!existBook){
             return res.status(404).json("Book history not found!")
         }
@@ -66,7 +68,7 @@ export const updateBook = async (req: Request, res: Response) => {
                 message: "No changes detected. Data is already up to date.",
             });
         }
-        const updateDetails = await Book.findByIdAndUpdate(id, req.body, {new:true, runValidators: true})
+        const updateDetails = await Book.findByIdAndUpdate(bookId, req.body, {new:true, runValidators: true})
         res.json({message: "Book updated",
             updateDetails
         });
@@ -79,13 +81,16 @@ export const updateBook = async (req: Request, res: Response) => {
 }
 
 export const deleteBook = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const bookId = req.params.id;
     try {
-        const existBook = await Book.findOne({_id:id});
+        if (!bookId) {
+            return res.status(400).json({ message: "Book ID required" });
+        }
+        const existBook = await Book.findOne({_id:bookId});
         if(!existBook){
             return res.status(404).json("Book history not found!")
         }
-        const deleted = await Book.findByIdAndDelete(id);
+        const deleted = await Book.findByIdAndDelete(bookId);
         return res.json({message: "Book deleted successfully!", deleted});
     } catch (error:any) {
         return res.status(500).json({

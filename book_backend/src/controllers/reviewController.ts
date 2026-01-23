@@ -10,6 +10,9 @@ export const addReview = async (req: Request, res: Response) => {
         }
         const userId = req.user.id;
         const { bookId } = req.params;
+        if (!bookId) {
+            return res.status(400).json({ message: "Book ID required" });
+        }
         if (!bookId || Array.isArray(bookId)) {
             return res.status(400).json({ message: "Invalid book id" });
         }
@@ -34,8 +37,11 @@ export const addReview = async (req: Request, res: Response) => {
 
 export const viewAllReviews = async (req: Request, res: Response) => {
     try {
-        const id = req.params.id;
-        const reviews = await Review.find({book: id});
+        const bookId = req.params.id;
+        if (!bookId) {
+            return res.status(400).json({ message: "Book ID required" });
+        }
+        const reviews = await Review.find({book: bookId});
         if(reviews.length === 0) {
             return res.status(404).json("No reviews for the book!");
         }
@@ -55,6 +61,9 @@ export const editReview = async (req: Request, res: Response) => {
         }
 
         const reviewId = req.params.id;
+        if (!reviewId) {
+            return res.status(400).json({ message: "review ID required" });
+        }
         const review = await Review.findById(reviewId);
 
         if (!review) {
@@ -85,6 +94,9 @@ export const deleteReview = async (req: Request, res: Response) => {
         }
 
         const reviewId = req.params.id;
+        if (!reviewId) {
+            return res.status(400).json({ message: "review ID required" });
+        }
         
         const existReview = await Review.findById(reviewId);
         if(!existReview){
