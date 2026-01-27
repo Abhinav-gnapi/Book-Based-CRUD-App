@@ -7,7 +7,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import UserI from "../interfaces/user.interface";
-import resetPasswordI from "../interfaces/resetPassword.interface";
+
+export interface resetPasswordI {
+    password: string;
+    confirmPassword: string;
+}
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -118,12 +122,56 @@ export const resetPassword = async (req: Request, res: Response) => {
       return res.status(400).json("password and confirm password must be same!")
     }
 
-    const isMatch = await bcrypt.compare(password, existUser.password);
-    if (isMatch) return res.status(400).json("Password is match with the previous password, enter new password!");
+    // const isMatch = await bcrypt.compare(password, existUser.password);
+    // if (isMatch) return res.status(400).json("Password is match with the previous password, enter new password!");
 
     const hash = await bcrypt.hash(password, 10);
     await User.findOneAndUpdate({email}, {password: hash}, {new: true, runValidators: true});
     res.json("Password updated successfully!");
+  } catch (error: any) {
+    res.status(500).json({
+      statusCode: res.statusCode,
+      errorMsg: error.message,
+    });
+  }
+}
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const email = req.user.email;
+    
+    if(!req.body){
+      return res.status(400).json("You didn't enter nothing yet!");
+    }
+    const {username} = req.body;
+    await User.findOneAndUpdate({email}, {username}, {new: true})
+    res.status(200).json(`username updated successfully to ${username}`);
+  } catch (error: any) {
+    res.status(500).json({
+      statusCode: res.statusCode,
+      errorMsg: error.message,
+    });
+  }
+}
+
+export const deleteProfile = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const email = req.user.email;
+
+    const deletedUser = await User.findOneAndDelete({email});
+    // if (!deletedUser) {
+    //   return res.status(404).json("User not found!");
+    // }
+    res.status(200).json({
+      message: "User profile deleted successfully!",
+      details: deletedUser
+    })
   } catch (error: any) {
     res.status(500).json({
       statusCode: res.statusCode,
