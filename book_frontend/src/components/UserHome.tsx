@@ -1,9 +1,9 @@
 import React from 'react'
-import ButtonField from './ButtonField'
-import { useNavigate } from 'react-router-dom'
-import api from '../api/axios';
+import ButtonField from './ButtonField.js'
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axios.js';
 
-export default function AdminHome() {
+export default function UserHome() {
     const navigate = useNavigate();
 
     function handleLogout(){
@@ -17,7 +17,7 @@ export default function AdminHome() {
 
   return (
     <>
-    <div>AdminHome</div>
+    <div>UserHome</div>
     <ButtonField id="logout" onClick={handleLogout} data="Logout" />
     </>
   )

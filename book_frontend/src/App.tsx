@@ -1,11 +1,11 @@
 import './App.css'
-import Registration from './components/Registration'
-import Login from './components/Login'
-import Home from './components/Home'
-import AdminHome from './components/AdminHome'
-import UserHome from './components/UserHome'
+import Registration from './components/Registration.js'
+import Login from './components/Login.js'
+import Home from './components/Home.js'
+import AdminHome from './admin/AdminHome.js'
+import UserHome from './components/UserHome.js'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import ProtectedRotes from './routes/ProtectedRotes'
+import ProtectedRotes from './routes/ProtectedRotes.js'
 
 function App() {
 
