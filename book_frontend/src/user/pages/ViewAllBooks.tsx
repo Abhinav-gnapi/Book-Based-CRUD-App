@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
-import { BookCard } from "../components/AdminBookcard";
+import { BookCard } from "../components/UserBookcard";
 import { Pagination } from "../../components/PaginationComponent";
 import { useNavigate } from "react-router-dom";
+import type { Book } from "../../interfaces/Book.interface";
 
 const genres = [
   "Fantasy",
@@ -15,10 +16,10 @@ const genres = [
   "Educational",
 ];
 
-const ViewBooks: React.FC = () => {
-  const [books, setBooks] = useState<any[]>([]);
+const ViewAllBooks: React.FC = () => {
+  const [books, setBooks] = useState<Book[]>([]);
   const [page, setPage] = useState(1);
-  const [limit] = useState();
+  const [limit] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -37,7 +38,7 @@ const ViewBooks: React.FC = () => {
 
   const fetchBooks = async (pageNumber: number) => {
     try{
-      const res = await api.get("/admin/viewAllBooks", {
+      const res = await api.get("/user/viewAllBooks", {
         params: {
           page: pageNumber,
           limit,
@@ -56,47 +57,28 @@ const ViewBooks: React.FC = () => {
     }
   };
 
-  const handleEdit = (bookId: string) => {
-    console.log("Edit book:", bookId);
-    navigate(`/books/${bookId}/edit`);
+  const handleReview = (bookId: string) => {
+    console.log("Review book:", bookId);
+    navigate(`/books/${bookId}/review`);
   };
 
-  const handleDelete = async (bookId: string) => {
-    if (!window.confirm("Are you sure you want to delete this book?")) {
-      return;
-    }
-
+  const handleWishlist = async (bookId: string) => {
     try {
-      const response = await api.delete(`/admin/deleteBook/${bookId}`);
+      const response = await api.post(`/user/wishlist/add/${bookId}`);
       
       if (response.data.success) {
         alert(response.data.message);
-        fetchBooks(page);
       }
     } catch (error: any) {
-      console.error("Error deleting book:", error);
-      const errorMessage = error.response?.data?.message || "Failed to delete book";
+      console.error("Error adding book to wishlist:", error);
+      const errorMessage = error.response?.data?.message || "Failed to add book to wishlist";
       alert(errorMessage);
     }
   };
 
   return (
     <>
-      {/* Search */}
-      {/* <header className="flex h-16 items-center justify-end bg-white px-[3rem] shadow-sm">
-        <input
-          placeholder="Search for books..."
-          value={search}
-          onChange={(e) => {
-            setPage(1);
-            setSearch(e.target.value);
-          }}
-          className="w-60 rounded-[8px] border pl-[0.6rem] text-sm"
-        />
-      </header> */}
-
-      {/* Filters */}
-      <div className="ml-64 bg-white py-[1rem] shadow-sm flex flex-wrap gap-6 justify-center">
+      <div className=" bg-white py-[1rem] shadow-sm flex flex-wrap gap-6 justify-center">
         {genres.map((g) => (
           <label key={g} className="flex items-center gap-2 text-sm">
             <input
@@ -114,7 +96,7 @@ const ViewBooks: React.FC = () => {
           </label>
         ))}
 
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="rounded-[6px] border px-[2px] py-2 text-sm">
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="rounded-[6px] border px-[2px] py-1 text-sm">
           <option value="createdAt">Newest</option>
           <option value="title">Title</option>
           <option value="publicationYear">Publication Year</option>
@@ -122,7 +104,7 @@ const ViewBooks: React.FC = () => {
           <option value="price">Price</option>
         </select>
 
-        <select className="rounded-[6px] border px-[7px] py-2 text-sm"
+        <select className="rounded-[6px] border px-[7px] text-sm"
           value={order}
           onChange={(e) => setOrder(e.target.value as "asc" | "desc")}
         >
@@ -132,9 +114,9 @@ const ViewBooks: React.FC = () => {
       </div>
 
       {/* Books */}
-      <div className="px-[5rem] py-[3rem] flex flex-wrap gap-10">
+      <div className="px-[5rem] py-[3rem] flex flex-col flex-wrap gap-3">
         {books.map((b) => (
-          <BookCard key={b._id} book={b} onEdit={handleEdit} onDelete={handleDelete}/>
+          <BookCard key={b._id} book={b} onWishlist={handleWishlist} onReview={handleReview}/>
         ))}
       </div>
 
@@ -143,4 +125,4 @@ const ViewBooks: React.FC = () => {
   );
 };
 
-export default ViewBooks;
+export default ViewAllBooks;

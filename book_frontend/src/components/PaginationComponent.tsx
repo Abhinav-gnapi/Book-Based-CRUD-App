@@ -9,7 +9,7 @@ export const Pagination = ({
 }) => {
   if (totalPages <= 1) return null;
   return (
-    <div className="flex mt-[5rem] items-center justify-center gap-2">
+    <div className="flex mt-[1.5rem] mb-[0.8rem] items-center justify-center gap-2">
       <button
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}
@@ -27,8 +27,8 @@ export const Pagination = ({
             className={`rounded-[8px] p-[4px] text-sm font-medium
               ${
                 page === pageNumber
-                  ? "bg-indigo-600 text-white"
-                  : "border hover:bg-gray-100"
+                  ? "border bg-indigo-600 text-white"
+                  : " hover:bg-gray-100"
               }`}
           >
             {pageNumber}

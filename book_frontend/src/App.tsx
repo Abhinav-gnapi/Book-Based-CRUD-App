@@ -1,23 +1,80 @@
 import './App.css'
-import Registration from './components/Registration.js'
-import Login from './components/Login.js'
-import Home from './components/Home.js'
-import AdminHome from './admin/AdminHome.js'
-import UserHome from './components/UserHome.js'
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import ProtectedRotes from './routes/ProtectedRotes.js'
+import Registration from './components/Registration'
+import Login from './components/Login'
+import Home from './components/Home'
+import AdminHome from './admin/AdminHome'
+import UserHome from './user/UserHome'
+import UpdateBook from './admin/pages/UpdateBook'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import ProtectedRoute from './routes/ProtectedRotes'
+import { AuthProvider } from './context/AuthContext'
+import Review from './user/pages/Review'
+import EditReview from './user/pages/EditReview'
 
 function App() {
-
   return (
     <BrowserRouter>
-      <Routes>
-      <Route path='/register' element={<Registration />}></Route>
-      <Route path='/login' element={<Login />}></Route>
-      <Route path='/home' element={<ProtectedRotes > <Home /> </ProtectedRotes>}></Route>
-      <Route path='/adminHome' element={<ProtectedRotes > <AdminHome /> </ProtectedRotes>}></Route>
-      <Route path='/userHome' element={<ProtectedRotes > <UserHome /> </ProtectedRotes>}></Route>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Registration />} />
+
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/adminHome"
+            element={
+              <ProtectedRoute>
+                <AdminHome />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/books/:bookId/edit"
+            element={
+              <ProtectedRoute>
+                <UpdateBook />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/userHome"
+            element={
+              <ProtectedRoute>
+                <UserHome />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/books/:bookId/review"
+            element={
+              <ProtectedRoute>
+                <Review />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/books/:bookId/review/edit/:reviewId"
+            element={
+              <ProtectedRoute>
+                <EditReview />
+              </ProtectedRoute>
+            }
+          />
+
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

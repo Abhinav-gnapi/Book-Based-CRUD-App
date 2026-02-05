@@ -25,10 +25,9 @@ export default function Login() {
     try {
       const res = await api.post('/login', { email: loginData.email, password: loginData.password })
       console.log(res.status)
-      const user = res.data.user
 
-      if (user.success) {
-        if (user.role === 'admin') {
+      if (res.data.success) {
+        if (res.data.user.role === 'admin') {
           navigate('/adminHome')
         } else {
           navigate('/userHome')
@@ -53,16 +52,16 @@ export default function Login() {
       shadow-[0_25px_50px_rgba(0,0,0,0.18)]
       transition-all
     ">
-    <h3 className="text-center mb-8 p-[8px] text-[1.6rem] font-extrabold text-[#2d2d2d]">
+    <h4 className="text-center p-[6px] text-[1.3rem] font-medium text-[#2d2d2d]">
       Welcome Back
-    </h3>
+    </h4>
     
         <form className="flex flex-col items-center gap-5 p-[9px]" onSubmit={handleLogin}>
                 <InputField 
                   type="email"
                   id="email"
                   placeholder="Enter email" 
-                  autoComplete="off" 
+                  autoComplete="on" 
                   onChange={(e) => {setLoginData({...loginData, email:e.target.value}), setError(null)}} 
                 />
 
@@ -84,7 +83,7 @@ export default function Login() {
                   </div>
                 )}
 
-                <ButtonField id="login" data="Login" 
+                <ButtonField id="login" data="Login" type='submit' 
                   className="w-[90%]
                   p-[7px]
                   rounded-[10px]
@@ -99,7 +98,7 @@ export default function Login() {
                 />
         </form>
 
-        <p className="mt-5 text-center text-sm text-gray-600 mb-[8px]">
+        <p className="mt-2 text-center text-sm text-gray-600 mb-[8px]">
       Don't have an account?{" "}
       <Link
         to="/register" className="text-[#667eea] font-semibold hover:underline">

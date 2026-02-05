@@ -5,6 +5,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const verifyUser = (req: Request, res: Response, next: NextFunction) => {
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+  
   const token = req.cookies?.token;
 
   if (!token) {

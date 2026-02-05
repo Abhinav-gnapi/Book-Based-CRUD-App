@@ -3,8 +3,11 @@ import { Request } from "express";
 
 export const authController = (req: Request, res: Response) => {
   res.json({
-    id: req.user?.id,
-    email: req.user?.email,
-    role: req.user?.role,
+    success: true,
+    user: {
+      id: req.user?.id,
+      email: req.user?.email,
+      role: req.user?.role,
+    }
   });
 };

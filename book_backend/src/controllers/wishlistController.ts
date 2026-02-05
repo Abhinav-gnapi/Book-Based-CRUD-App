@@ -31,6 +31,7 @@ export const addWishlist = async (req: Request, res: Response) => {
         .populate("book");
 
         res.status(201).json({
+            success: true,
             message: "Added to wishlist",
             item: populatedItem
         });
@@ -47,14 +48,21 @@ export const viewMyWishlist = async (req: Request, res: Response) => {
         if (!req.user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-        const userId = req.user.id;
 
-        const wishlist = await Wishlist.find({user: userId}).populate("book");
-        res.status(200).json(wishlist);
-    } catch (error: any) {
+        const wishlist = await Wishlist.find({ user: req.user.id })
+            .populate("book")
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            message: "Wishlist retrieved successfully",
+            count: wishlist.length,
+            items: wishlist
+        });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
         res.status(500).json({
-            statusCode: res.statusCode,
-            errorMsg: error.message
+            message: "Internal server error",
+            error: message
         });
     }
 }
@@ -64,30 +72,33 @@ export const removeFromWishlist = async (req: Request, res: Response) => {
         if (!req.user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-        const userId = req.user.id;
-        const bookId = req.params.id;
+        
+        const { id: bookId } = req.params;
+        
         if (!bookId) {
             return res.status(400).json({ message: "Book ID required" });
         }
 
-        const wishlistItem = await Wishlist.findOne({
-            user: userId,
-            book: bookId
-        });
-
-        if (!wishlistItem) {
-            return res.status(200).json({ message: "Already removed" });
-        }
         const itemRemoved = await Wishlist.findOneAndDelete({
-            user: userId,
+            user: req.user.id,
             book: bookId
         }).populate("book");
 
-        res.json({ message: "Removed from wishlist", item: itemRemoved });
-    } catch(error: any) {
+        if (!itemRemoved) {
+            return res.status(404).json({ 
+                message: "Item not found in wishlist" 
+            });
+        }
+
+        res.status(200).json({ 
+            message: "Removed from wishlist", 
+            item: itemRemoved 
+        });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
         res.status(500).json({
-            statusCode: res.statusCode,
-            errorMsg: error.message
+            message: "Internal server error",
+            error: message
         });
     }
 }

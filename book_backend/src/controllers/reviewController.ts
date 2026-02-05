@@ -103,7 +103,7 @@ export const deleteReview = async (req: Request, res: Response) => {
             return res.status(404).json("Review not found!")
         }
         if (existReview.user.toString() !== req.user.id) {
-            return res.status(403).json({ message: "You cannot edit this review" });
+            return res.status(403).json({ message: "You cannot delete this review" });
         }
         const deleted = await Review.findByIdAndDelete(reviewId);
         return res.json({message: "Review deleted successfully!", deleted});

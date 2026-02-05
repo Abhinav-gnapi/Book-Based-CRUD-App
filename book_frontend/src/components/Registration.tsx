@@ -110,7 +110,7 @@ export default function Registration() {
             </div>
           )}
           
-          <ButtonField id="submit" data="Register"
+          <ButtonField id="submit" data="Register" type='submit'
             className='w-[90%]
                   p-[7px]
                   rounded-[10px]

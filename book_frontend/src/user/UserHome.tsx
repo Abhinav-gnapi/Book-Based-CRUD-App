@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import AdminSidebar from "./AdminSidebar";
-import ViewBooks from "./pages/ViewBooks";
-import AddBook from "./pages/AddBooks";
+import AdminSidebar from "./UserSidebar";
+import ViewAllBooks from "./pages/ViewAllBooks";
+import Wishlist from "./pages/Wishlist";
 import Profile from "../components/Profile";
 
-const menu = ["View All Books", "Add Book", "Profile"];
+const menu = ["View All Books", "WishList", "Profile"];
 
-const AdminHome: React.FC = () => {
+const UserHome: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState(menu[0]);
 
   const renderContent = () => {
     switch (activeMenu) {
       case "View All Books":
-        return <ViewBooks />;
-      case "Add Book":
-        return <AddBook />;
+        return <ViewAllBooks />;
+      case "WishList":
+        return <Wishlist />;
       case "Profile":
         return <Profile />
       default:
@@ -35,4 +35,4 @@ const AdminHome: React.FC = () => {
   );
 };
 
-export default AdminHome;
+export default UserHome;

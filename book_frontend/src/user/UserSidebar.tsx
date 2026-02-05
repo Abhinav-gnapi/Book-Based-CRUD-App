@@ -3,13 +3,13 @@ import ButtonField from "../components/ButtonField";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-interface AdminSidebarProps {
+interface UserSidebarProps {
   menu: string[];
   activeMenu: string;
   onMenuChange: (menu: string) => void;
 }
 
-const AdminSidebar: React.FC<AdminSidebarProps> = ({
+const UserSidebar: React.FC<UserSidebarProps> = ({
   menu,
   activeMenu,
   onMenuChange,
@@ -56,4 +56,4 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   );
 };
 
-export default AdminSidebar;
+export default UserSidebar;

@@ -50,61 +50,101 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body as UserI;
 
-    if (!email && !password) return res.status(400).json({success: false, message: "Enter email and password!"});
-    if (!email) return res.status(400).json({success: false, message: "Enter email!"});
-    if (!password) return res.status(400).json({success: false, message: "Enter password!"});
+    if (!email && !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Email and password are required!" 
+      });
+    }
+    if (!email) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Email is required!" 
+      });
+    }
+    if (!password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Password is required!" 
+      });
+    }
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({success: false, message: "User not exists! please register.."});
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "User not found. Please register." 
+      });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch);
-
-    if (!isMatch) return res.status(400).json({success: false, message: "Password is incorrect!"});
+    if (!isMatch) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Incorrect password!" 
+      });
+    }
 
     const token = jwt.sign(
-      { email: user.email, role: user.role, id: user._id },
+      { 
+        email: user.email, 
+        role: user.role, 
+        id: user._id 
+      },
       process.env.JWT_KEY as string,
-      { expiresIn: "1d" }
+      { expiresIn: "7d" }
     );
 
-    res.cookie("token", token, { httpOnly: true });
+    // Set cookie
+    res.cookie("token", token, { 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
 
     return res.json({
+      success: true,
+      message: "Login successful",
       user: {
-        success: true,
+        id: user._id,
         email: user.email,
         role: user.role,
       },
     });
   } catch (error: any) {
-    res.status(500).json({
-      statusCode: res.statusCode,
-      errorMsg: error.message,
+    console.error('Login error:', error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
     });
   }
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    const email = req.user.email;
-    res.cookie("token", "", {
+    res.clearCookie('token', {
       httpOnly: true,
-      expires: new Date(0),
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     });
 
-    res.json({ success: true, message: `${email} logout Successfully!` });
+    return res.json({
+      success: true,
+      message: "Logged out successfully",
+    });
   } catch (error: any) {
-    res.status(500).json({
-      statusCode: res.statusCode,
-      errorMsg: error.message,
+    console.error('Logout error:', error);
+    return res.status(500).json({
+      success: false,
+      message: "Logout failed",
+      error: error.message,
     });
   }
 };
